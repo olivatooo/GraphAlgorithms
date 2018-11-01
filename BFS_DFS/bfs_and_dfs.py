@@ -18,6 +18,7 @@
 import queue
 import networkx as nx
 import matplotlib.pyplot as plt
+from random import choice
 
 def bfs_tree(graph,v):
     """ 
@@ -60,16 +61,13 @@ def dfs_tree_with_stack(graph,v):
     anterior = ""
     while stack:
         s = stack.pop()
-        if s not in visitados:
-            if (anterior == ""):
-                anterior = s
-            else:
-                tree.append( (anterior,s) )
-                anterior = s
+        if s not in visitados: 
+            tree.append( s )
             visitados.append(s)
             for i in list(graph.adj[s]):
                 if i not in visitados:
                     stack.append(i)
+
     return tree
 
 
@@ -112,33 +110,35 @@ def highlight_edges(graph,edges):
 # Lista de arquivos de entrada
 entradas = ["karate.paj","dolphins.paj"]
 
-# Node inicial arbitrario
-# Não realizei a checagem para saber se o node existe
-initial_node = "3"
-
 for e in entradas:
     print("")
     print("Processando "+e+"...")
     G = nx.read_pajek(e)
+ 
+    initial_node = choice(list(G))
+    print("\nIniciando no node:"+str(initial_node)+"\n")
     my_bfs_tree = bfs_tree(G,initial_node)
-    # BFS - Tree do NX para poder "conferir"
-    nx_bfs_tree = nx.bfs_tree(G,source=initial_node).edges()
+ 
     # Lista de cores para fazer o desenho bonitinho
     colors = highlight_edges(G,my_bfs_tree)
     # DFS - Tree do NX para poeder "conferir"
-    nx_dfs_tree = nx.dfs_tree(G,source=initial_node).edges()
-
+    # nx_dfs_tree = nx.dfs_tree(G,source=initial_node).edges()
     my_dfs_tree = dfs_tree_with_stack(G,initial_node)
-    # Printing BFS
-    colors = highlight_edges(G,my_bfs_tree)
-    nx.draw(G,with_labels=True,edge_color=colors)
-    plt.show()
-    print("BFS de "+e)
-    print(my_bfs_tree)
+    print(my_dfs_tree)
+
     # Printing DFS
     colors = highlight_edges(G,my_dfs_tree)
+    plt.title("DFS de "+e+" iniciando em "+str(initial_node))
     nx.draw(G,with_labels=True,edge_color=colors)
     plt.show()
     print("DFS de "+e)
     print(my_dfs_tree)
     print("")
+
+     # Printing BFS
+    colors = highlight_edges(G,my_bfs_tree)
+    plt.title("BFS de "+e+" iniciando em "+str(initial_node))
+    nx.draw(G,with_labels=True,edge_color=colors)
+    plt.show()
+    print("BFS de "+e)
+    print(my_bfs_tree)

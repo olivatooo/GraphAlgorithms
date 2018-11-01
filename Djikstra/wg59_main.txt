@@ -1,0 +1,26 @@
+# wg59_main.txt
+#
+#  Discussion:
+#
+#    This data represents the abstract Cartesian coordinates of 59 towns
+#    in West Germany.
+#
+#  Modified:
+#
+#    06 November 2002
+#
+#  Author:
+#
+#    John Burkardt
+#
+#  Reference:
+#
+#    Helmut Spaeth,
+#    Cluster Analysis Algorithms 
+#    for Data Reduction and Classification of Objects,
+#    Ellis Horwood, 1980, page 80.
+#
+size  59
+geom  plane
+name  wg59_name.txt
+xy    wg59_xy.txt
