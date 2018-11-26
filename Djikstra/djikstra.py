@@ -1,9 +1,64 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+    Criado por:
+    Gabriel Olivato - 743537
+    Igor Raphael Magollo - 743550
+    Claudia Sanches - 743521
+
+    PROJETO 4: ÁRVORES DE CAMINHOS MÍNIMOS E AGRUPAMENTO DE DADOS
+
+"""
+
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 from math import inf
-from random import random
-import queue
+from heapq import heappush,heappop
+
+"""
+    Aresta (u,v)
+    Peso = w
+    λ(u) = Custo de sair da origem até u
+    π(u) = Antecessor de u
+"""
+
+def djikstra(graph,initial):
+    pi = {}
+    lam = {}
+    pq = []
+    w = nx.get_edge_attributes(graph,'weight')
+
+    # Iniciando lambda, pi e a priority queue
+    for i in list(graph):
+        pi[i] = None
+        if i in initial:
+            lam[i] = 0
+            heappush(pq,(0,i))
+        else:
+            lam[i] = inf
+            heappush(pq,(inf,i))
+    while pq:
+        p = heappop(pq)[1]
+        for i in list(graph.adj[p]):
+            try:
+                peso = int(w[(p,i)]) + int(lam[p])
+            except KeyError:
+                peso = int(w[(i,p)]) + int(lam[p])
+            if(peso < lam[i]):
+                pi[i] = p
+                lam[i] = peso
+                if i in pq:
+                    pq[i] = peso
+    edges = []
+    for key, value in pi.items():
+        temp = (key,value)
+        if value != None:
+            edges.append(temp)
+
+    return edges, lam
+    
+
 
 def load_labels(arq):
     labels = {}
@@ -12,51 +67,39 @@ def load_labels(arq):
     for f in file:
         if '#' not in f:
             labels[count] = f
+            count+=1
     return labels
 
 
-def add_random_weight(graph):
-    for u,v,d in graph.edges(data=True):
-        d['weight'] = random()
+def init(graph):
     edges,weights = zip(*nx.get_edge_attributes(G,'weight').items())
     return edges, weights
-        
+         
 
-def distancias(graph,node):
-    dist = {}
-    encontrados = []
-    q = queue.Queue()
-
-    for n in list(graph):
-        dist[n] = inf
-    encontrados.append(node)
-    q.put(node)
-    while not q.empty():
-        v = q.get()
-        for x in graph.adj[v]:
-            if x not in encontrados:
-                encontrados.append(x)
-                q.put(x)
-                dist[x]=dist[v]+1
-    return dist
+def print_graph(graph,edges,weights,labels):
+    pos = nx.kamada_kawai_layout(G)
+    nx.draw(G, pos, node_color='white', 
+            edgelist=edges,
+            node_size=50,
+            edge_color=weights,
+            labels=labels,width=1.0, 
+            edge_cmap=plt.cm.coolwarm,
+            font_size=9,
+            font_color="black",
+            font_weight='bold')
+    plt.show()
 
 
-
-def dijkstra(graph,node):
-    dist = {}
-    prev = {}
-    for n in list(graph):
-        dist[n] = inf
-        prev[n] = None
-    dist[node] = 0
-    R = []
-    while R != list(graphs):
-        return
-        
-
-def print_graph(graph,edges,weights):
-    pos = nx.spring_layout(G)
-    nx.draw(G, pos, node_color='black', edgelist=edges, edge_color=weights, width=1.0, edge_cmap=plt.cm.Blues)
+def print_tree(graph,edges,labels):
+    pos = nx.kamada_kawai_layout(G)
+    nx.draw(G, pos, node_color='grey', 
+            edgelist=edges,
+            node_size=50,
+            labels=labels,width=1.0,
+            edge_color='red', 
+            font_size=9,
+            font_color="black",
+            font_weight='bold')
     plt.show()
 
 
@@ -64,8 +107,18 @@ file_to_load = 'wg59_dist.txt'
 file_with_labels = 'wg59_name.txt'
 A = np.loadtxt(file_to_load)
 G = nx.from_numpy_matrix(A)
-edges, weights = add_random_weight(G)
-#dijkstra(G,2)
-print(distancias(G,2))
-#print_graph(G,edges,weights)
 
+# Lista de nodes iniciais
+nodes_iniciais = [0,1,25,27,4]
+
+edges, weights = init(G)
+labels = load_labels(file_with_labels)
+print("Grafo do arquivo:"+file_to_load)
+print_graph(G,edges,weights,labels)
+
+edges, lam = djikstra(G,nodes_iniciais)
+print("Árvore de caminhos mínimos (pi):")
+print(edges)
+print("Menor caminho até (lambda):")
+print(lam)
+print_tree(G,edges,labels)

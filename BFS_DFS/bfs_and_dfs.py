@@ -46,6 +46,14 @@ def bfs_tree(graph,v):
 
 
 def buscaProfPilha(graph,s):
+    """ 
+        Retorna uma lista de pares de nodes
+        que formam uma BFS Tree 
+
+        Keyword arguments:
+        graph -- tipo Graph do networkx
+        v -- node inicial
+    """
     stack = [s]
     visitados = []
     tree = {}
