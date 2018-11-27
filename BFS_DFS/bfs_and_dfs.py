@@ -45,7 +45,7 @@ def bfs_tree(graph,v):
     return tree
 
 
-def buscaProfPilha(graph,s):
+def dfs_tree_stack(graph,s):
     """ 
         Retorna uma lista de pares de nodes
         que formam uma BFS Tree 
@@ -113,7 +113,7 @@ for e in entradas:
     print("")
     print("Processando "+e+"...")
     G = nx.read_pajek(e)
- 
+
     initial_node = choice(list(G))
     print("\nIniciando no node:"+str(initial_node)+"\n")
     my_bfs_tree = bfs_tree(G,initial_node)
@@ -131,7 +131,7 @@ for e in entradas:
     colors = highlight_edges(G,my_bfs_tree)
     # DFS - Tree do NX para poeder "conferir"
     # nx_dfs_tree = nx.dfs_tree(G,source=initial_node).edges()
-    my_dfs_tree = buscaProfPilha(G,initial_node)
+    my_dfs_tree = dfs_tree_stack(G,initial_node)
     print(my_dfs_tree)
 
     # Printing DFS
