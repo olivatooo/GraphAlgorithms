@@ -48,7 +48,7 @@ def bfs_tree(graph,v):
 def dfs_tree_stack(graph,s):
     """ 
         Retorna uma lista de pares de nodes
-        que formam uma BFS Tree 
+        que formam uma DFS Tree 
 
         Keyword arguments:
         graph -- tipo Graph do networkx
